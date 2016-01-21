@@ -1,0 +1,12 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h1>This is the snippet!</h1>
+{% block snippet %}
+
+<div data-title="{{ snippet.title }}" id="editor">{{ snippet.content }}
+</div>
+
+{% endblock %}
+
+{% endblock %}

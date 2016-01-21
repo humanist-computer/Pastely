@@ -1,0 +1,181 @@
+<!doctype html>
+<head>
+<meta charset="utf-8">
+<title>{% block title %}{% endblock %}</title>
+
+<!-- meta -->
+<meta name="description" content="">
+<meta name="author" content="">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- /meta -->
+
+<!-- styles -->
+<style type="text/css">.mui-form-floating-label{-webkit-transition:all .15s ease-out;-moz-transition:all .15s ease-out;-o-transition:all .15s ease-out;transition:all .15s ease-out;}</style>
+<link href="//cdn.muicss.com/mui-0.1.23/css/mui.min.css" rel="stylesheet" type="text/css" />
+<link type="text/css" rel="stylesheet" href="/static/css/font-awesome.min.css" />
+
+<link type="text/css" rel="stylesheet" href="/static/css/main.css" />
+<!-- /styles -->
+
+<!-- scripts -->
+<script src="{{ url_for('static', filename='js/modernizr.js') }}"></script>
+<!--[if lt IE 9]><script src="/static/js/libs/respond-1.3.0.min.js"></script><![endif]-->
+<!-- /scripts -->
+
+<script src="//cdn.muicss.com/mui-0.1.23/js/mui.min.js"></script>
+<style type="text/css" media="screen">
+    #editor { 
+        position: absolute;
+        top: 64px;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+</style>
+</head>
+<body>
+
+<header id="header" class="header-shadow">
+  <nav id="appbar" class="mui-container-fluid">
+	  <table width="100%">
+	    <tbody>
+	    	<tr class="mui-appbar-height">
+		      <td>
+	        	<a class="appbar-brand mui-hidden-xs" href="/docs/v1/css-js/appbar">Pastesee</a>
+		        
+		      </td>
+		      
+	      	<td class="mui-text-right">
+	      	  <div class="mui-form-group title-input-container">
+    <input placeholder="Snippet title" type="text" class="js-title-input title-input mui-form-control">
+
+  </div>
+	      	<div class="mui-dropdown">
+	      	  <button class="js-lang-select-btn mui-btn-raised mui-btn" data-mui-color="primary" data-mui-toggle="dropdown">
+	      	    <span class="js-lang-select-btn-text">Language</span>
+	      	    <span class="mui-caret"></span>
+	      	  </button>
+	      	  <ul class="mui-dropdown-menu">
+		      	  <li><a class="js-lang-btn" data-lang="css" href="#">css</a></li>
+		      	  <li><a class="js-lang-btn" data-lang="html" href="#">html</a></li>
+		      	  <li><a class="js-lang-btn" data-lang="javascript" href="#">javascript</a></li>
+		      	  <li><a class="js-lang-btn" data-lang="json" href="#">json</a></li>
+		      	  <li><a class="js-lang-btn" data-lang="markdown" href="#">markdown</a></li>
+		      	  <li><a class="js-lang-btn" data-lang="php" href="#">php</a></li>
+		      	  <li><a class="js-lang-btn" data-lang="python" href="#">python</a></li>
+	      	  	<li><a class="js-lang-btn" data-lang="ruby" href="#">ruby</a></li>
+	      	  	<li><a class="js-lang-btn" data-lang="sass" href="#">sass</a></li>
+	      	    <li><a class="js-lang-btn" data-lang="yaml" href="#">yaml</a></li>
+	      	  </ul>
+	      	</div>
+	      	<a class="js-create-snippet mui-btn mui-btn-raised btn-accent" href="#">Create snippet</a>
+
+
+
+		      </td>
+	    	</tr>
+	  	</tbody>
+	  </table>
+	</nav>
+</header>
+
+	<!-- Begin page content -->
+	<div class="mui-container">
+
+	<div class="space-top"></div>
+
+	  {% with messages = get_flashed_messages() %}
+	    {% if messages %}
+	      {% for message in messages %}
+	        <div class="alert alert-block alert-error fade in">
+	          <a class="close" data-dismiss="alert">&times;</a>
+	          {{ message }}
+	        </div>
+	      {% endfor %}
+	    {% endif %}
+	  {% endwith %}
+
+	  {% block content %}{% endblock %}
+    
+  </div>
+  <script src="{{ url_for('static', filename='ace-editor/ace.js') }}" type="text/javascript" charset="utf-8"></script>
+  <script>
+
+  </script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="/static/js/libs/jquery-1.10.2.min.js"><\/script>')</script>
+  
+  <!-- Google Analytics - Change UA-XXXXX-X to be your site's ID -->
+  <script>
+	  var editor = ace.edit("editor");
+	  editor.setTheme("ace/theme/monokai");
+	  editor.getSession().setMode("ace/mode/text");
+	  var selBtnText = $('.js-lang-select-btn-text')[0];
+	  var language = null;
+
+  	$('.js-lang-btn').on('click', function(e) {
+  		console.log('e', e);
+  		var lang = e.target.dataset.lang;
+  		console.log('lang', lang);
+  		$(selBtnText).text(lang);
+
+  		language = lang;
+
+  		editor.getSession().setMode("ace/mode/" + lang);
+  	});
+  	
+  	var savedLang = $('#editor').data('lang');
+  	console.log('savedLang', savedLang);
+  	if (savedLang != '') {
+  		$(selBtnText).text(savedLang);
+  		editor.getSession().setMode("ace/mode/" + savedLang);
+  	}
+
+  	var createSnippetBtn = $('.js-create-snippet');
+
+  	$(createSnippetBtn).on('click', function(e) {
+
+  		console.log('hello');
+  		e.preventDefault();
+
+  		var content = editor.getSession().getValue();
+  		var titleInput = $('.js-title-input')[0];
+  		var title = $(titleInput).val();
+
+  		var snippet = {
+  			'title': title,
+  			'content': content,
+  			'lang': language
+  		}
+
+  		console.log(JSON.stringify(snippet));
+
+  		// Submit the form to our backend
+  		  $.ajax({
+  		    context: this,
+  		    url: '/api/v1.0/snippets',
+  		    type: 'POST',
+  		    data: JSON.stringify(snippet),
+  		    beforeSend: function (request) {
+  		        request.setRequestHeader("Content-Type", "application/json");
+  		    },
+
+  		  }).success(function(response, textStatus, errorThrown) {
+  		 	
+  		 	var key = response.key;
+  		 	window.location.href = "/" + key;
+
+  		    console.log('ajax success', response, textStatus, errorThrown);
+
+
+  		  }).error(function(jqXHR, textStatus, errorThrown) {
+  		    console.log('ajax fail', jqXHR, textStatus, errorThrown);
+  		  });
+
+  	});
+
+
+  </script>
+
+</body>
+</html>

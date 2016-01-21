@@ -1,0 +1,3 @@
+/*! modernizr 3.0.0-alpha.4 (Custom Build) | MIT *
+ * http://modernizr.com/download/#-addtest-atrule-domprefixes-hasevent-mq-prefixed-prefixedcss-prefixes-printshiv-testallprops-testprop-teststyles !*/
+!function(n,e,s){var i=[],o={_version:"3.0.0-alpha.4",_config:{classPrefix:"",enableClasses:!0,enableJSClass:!0,usePrefixes:!0},_q:[],on:function(n,e){var s=this;setTimeout(function(){e(s[n])},0)},addTest:function(n,e,s){i.push({name:n,fn:e,options:s})},addAsyncTest:function(n){i.push({name:null,fn:n})}},t=o._config.usePrefixes?" -webkit- -moz- -o- -ms- ".split(" "):[];o._prefixes=t;var Modernizr=function(){};Modernizr.prototype=o,Modernizr=new Modernizr}(window,document);
