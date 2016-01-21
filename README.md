@@ -1,5 +1,5 @@
 # Pastely
-A pastebin-style application built on Pyhton Flask
+A pastebin-style application built on Python Flask
 
 ### Features
 * Syntax highlighting
